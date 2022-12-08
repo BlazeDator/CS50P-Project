@@ -30,7 +30,7 @@ I'm thinking about designing a small video game. A little wave survival where yo
 - Leaderboard of attempts
 - Scaling difficulty with waves
 
-<hr>
+
 
 ## What new skills will you need to acquire? What topics will you need to research?
 <br>
@@ -44,7 +44,7 @@ I'm gonna need to research a python package to make the graphics and everything 
 
 My best outcome is having all the features I wrote in features needed, a better one is having most of them and a good one is having a functional game otherwise, I can't submit it in whatever state it is.
 
-<hr>
+
 <br>
 
 ## Timeline - 06/12/2022 to 20/12/2022 (Est. 14 days) 
