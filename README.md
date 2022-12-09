@@ -88,3 +88,9 @@ Made class for the debug text, it's kinda bad but does the job for now
 ![debug_text](progress-pics/Screenshot%202022-12-09%20145521.png)
 
 Also made F3 show the debug info and F4 hide it.
+
+### 09/12/2022
+
+Made a class for the player, also made it a circle so the name of the game makes sense "Survival Squared", right now I need to make the enemies, the squares, and implement a basic hunt AI, where they come after the player, if they can reach it, player dies and "Game Over!"
+
+![player circle](progress-pics/Screenshot%20_player.png)
