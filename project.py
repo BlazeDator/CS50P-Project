@@ -43,13 +43,14 @@ def main():
    dot_vector = [0, 0]
 
    # Debug Info
+   show_debug = True
    debug_framerate = debug_text(font)
    debug_delta = debug_text(font, y=32)
    debug_player_x = debug_text(font, y=64)
    debug_player_y = debug_text(font, y=96)
    debug_player_speed = debug_text(font, y=128)
    debug_player_info = debug_text(font, y=160)
-
+   # For Blitting
    debug = [
       debug_framerate,
       debug_delta,
@@ -65,12 +66,13 @@ def main():
       delta += clock.tick(max_framerate) 
       
       # Debug 
-      debug_framerate.update(str(int(clock.get_fps())) + " Max FPS: " + str(max_framerate))
-      debug_delta.update(str(clock.get_time())+" ms")
-      debug_player_x.update("Dot X: " + str(dot_rect.x))
-      debug_player_y.update("Dot Y: " + str(dot_rect.y))
-      debug_player_speed.update("Speed: " + str(dot_vector))
-      debug_player_info.update(str(c_diag_speed(speed)))
+      if show_debug:
+         debug_framerate.update(str(int(clock.get_fps())) + " Max FPS: " + str(max_framerate))
+         debug_delta.update(str(clock.get_time())+" ms")
+         debug_player_x.update("Dot X: " + str(dot_rect.x))
+         debug_player_y.update("Dot Y: " + str(dot_rect.y))
+         debug_player_speed.update("Speed: " + str(dot_vector))
+         debug_player_info.update(str(c_diag_speed(speed)))
 
 
       for event in pygame.event.get():
@@ -102,21 +104,27 @@ def main():
       if keys[pygame.K_s] and keys[pygame.K_d]: 
          dot_vector = [(speed_diag), (speed_diag)]
 
+      #Still
+      if not keys[pygame.K_w] and not keys[pygame.K_a] and not keys[pygame.K_s] and not keys[pygame.K_d]:
+         dot_vector = [0, 0]
+
       # Framerate Control
       if keys[pygame.K_UP]:
          max_framerate += 5
       if keys[pygame.K_DOWN]:
          max_framerate -= 5
-      if not keys[pygame.K_w] and not keys[pygame.K_a] and not keys[pygame.K_s] and not keys[pygame.K_d]:
-         dot_vector = [0, 0]
-         
+      if keys[pygame.K_F3]:
+         show_debug = True
+      if keys[pygame.K_F4]:
+         show_debug = False  
 
       screen.fill(black)
       screen.blit(dot, dot_rect)
 
       # Debug
-      for info in debug:
-         screen.blit(info.surface, info.rect)
+      if show_debug:
+         for info in debug:
+            screen.blit(info.surface, info.rect)
 
       pygame.display.update()
 
