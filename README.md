@@ -94,3 +94,10 @@ Also made F3 show the debug info and F4 hide it.
 Made a class for the player, also made it a circle so the name of the game makes sense "Survival Squared", right now I need to make the enemies, the squares, and implement a basic hunt AI, where they come after the player, if they can reach it, player dies and "Game Over!"
 
 ![player circle](progress-pics/Screenshot%20_player.png)
+
+
+After that I created a child Class of the player called Square, then gave it a random movement method.
+
+Back in Main, I created a list of squares, made them call the random direction method once a second, and updated their movement every 25 ms like the player, here's the result
+
+![Squareees!](progress-pics/2022-12-09%2018-55-35.mp4)
