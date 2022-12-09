@@ -100,4 +100,5 @@ After that I created a child Class of the player called Square, then gave it a r
 
 Back in Main, I created a list of squares, made them call the random direction method once a second, and updated their movement every 25 ms like the player, here's the result
 
-![Squareees!](progress-pics/2022-12-09%2018-55-35.mp4)
+
+[Squareees!](progress-pics/2022-12-09%2018-55-35.mp4)
