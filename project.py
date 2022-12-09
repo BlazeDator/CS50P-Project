@@ -18,7 +18,7 @@ class Debug_text:
       self.surface = self.font.render(self.text, True, self.color, self.background)
 
 class Player:
-   def __init__(self, size:int=30, screen_center=(), speed:int=8, pcolor:list=[255,255,255]):
+   def __init__(self, size:int=30, screen_center=(1280,720), speed:int=8, pcolor:list=[255,255,255]):
       self.surface = pygame.Surface((size,size)) 
       self.color = pygame.color.Color(*pcolor)
       self.rect = pygame.draw.circle(surface=self.surface, color=self.color, center=(self.surface.get_width()/2, self.surface.get_height()/2), radius=self.surface.get_width()/2, width=0)
@@ -53,29 +53,32 @@ class Player:
          self.mov_vector = [0, 0]
 
 class Square(Player):
-   def __init__(self, size:int=20, speed:int=7):
+   def __init__(self, size:int=20, speed:int=7, screen_size:tuple=(1280,720)):
       self.surface = pygame.Surface((size,size))
       self.surface.fill((255, 0, 0))
       self.rect = self.surface.get_rect()
-      self.rect.move_ip(random.randint(20,1260),random.randint(20, 700))
       self.speed = speed
       self.speed_diag = c_diag_speed(self.speed)
       self.mov_vector = [0, 0]
-   
-   def mov_random(self):
-      keys = {
+      # Spawn
+      x = random.randint(0, screen_size[0]-size)
+      y = random.randint(0, screen_size[1]-size)
+      self.rect.move_ip(x, y)
+      self.keys = {
          pygame.K_w : True,
          pygame.K_a : True,
          pygame.K_s : True,
          pygame.K_d : True
       }
-      for key in keys:
+   
+   def mov_random(self):
+      for key in self.keys:
          rnd = random.choice([True,False])
          if rnd:
-            keys[key] = rnd
+            self.keys[key] = rnd
          else:
-            keys[key] = rnd
-      self.movement(keys)
+            self.keys[key] = rnd
+      self.movement(self.keys)
       
       
 
@@ -102,29 +105,31 @@ def main():
    player = Player(screen_center=(screen_size[0]/2, screen_size[1]/2))
 
    # Squares
-   squares = [Square() for i in range(250)]
+   squares = [Square(screen_size=screen_size) for i in range(50)]
 
+
+   # Timers
+   delta_25_ms = 0   # 40  Ticks per second
+   delta_1000_ms = 0 # 1   Tick  per second
 
    # Debug Info
    show_debug = False
-   debug_info = Debug_text(font)
-   debug_framerate = Debug_text(font, y=32)
-   debug_delta = Debug_text(font, y=64)
-   debug_player_x = Debug_text(font, y=96)
-   debug_player_y = Debug_text(font, y=128)
-   debug_player_speed = Debug_text(font, y=160)
-   debug = [  # For Blitting
-      debug_info,
-      debug_framerate,
-      debug_delta,
-      debug_player_x,
-      debug_player_y,
-      debug_player_speed
-      ]
-
-
-   delta_25_ms = 0
-   delta_1000_ms = 0
+   def update_debug() -> list[str]:
+      debug_info = [
+               "Version 0.1 ",
+               "Player Vector: " + str(player.mov_vector),
+               str(int(clock.get_fps())) + " Max FPS: " + str(max_framerate),
+               str(clock.get_time())+" ms",
+               "Player X: " + str(player.rect.x),
+               "Player Y: " + str(player.rect.y),
+               "Delta 1s: " + str(delta_1000_ms),
+               "Squares: " + str(len(squares))
+            ]
+      return debug_info
+   debug_info = update_debug()
+   lines = len(debug_info) * 32
+   debug = [Debug_text(font, y=i) for i in range(0,lines,32)]
+   
    # Game Loop
    while True:  
       tick = clock.tick(max_framerate) 
@@ -168,14 +173,10 @@ def main():
       if keys[pygame.K_F3]:
          show_debug = True
       if show_debug:
-         debug_info.update("V0.1 " + "delta 1s: " + str(delta_1000_ms))
-         debug_framerate.update(str(int(clock.get_fps())) + " Max FPS: " + str(max_framerate))
-         debug_delta.update(str(clock.get_time())+" ms")
-         debug_player_x.update("player X: " + str(player.rect.x))
-         debug_player_y.update("player Y: " + str(player.rect.y))
-         debug_player_speed.update("Speed: " + str(player.mov_vector))
-         for info in debug:
-            screen.blit(info.surface, info.rect)
+         debug_info = update_debug()
+         for i in range(len(debug)):
+            debug[i].update(debug_info[i])
+            screen.blit(debug[i].surface, debug[i].rect)
          if keys[pygame.K_F4]:
             show_debug = False  
 
