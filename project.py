@@ -57,7 +57,7 @@ class Square(Player):
       self.surface = pygame.Surface((size,size))
       self.surface.fill((255, 0, 0))
       self.rect = self.surface.get_rect()
-      self.rect.move_ip(random.randint(10,1270),random.randint(10, 710))
+      self.rect.move_ip(random.randint(20,1260),random.randint(20, 700))
       self.speed = speed
       self.speed_diag = c_diag_speed(self.speed)
       self.mov_vector = [0, 0]

@@ -100,6 +100,8 @@ After that I created a child Class of the player called Square, then gave it a r
 
 Back in Main, I created a list of squares, made them call the random direction method once a second, and updated their movement every 25 ms like the player, here's the result
 
-<video width=100% autoplay muted loop>
-  <source src="progress-pics/2022-12-09%2018-55-35.mp4" type="video/mp4">
-</video>
+Some
+![Some squares](progress-pics/Screenshot_squares.png)
+
+5000 of them
+![5000](progress-pics/Screenshot_20221209_070243.png)
