@@ -80,3 +80,11 @@ Since then I read more about vectors and found a way to calculate the distance t
 Speed was 5 here.
 
 ![Diagonal Speed 2](progress-pics/Screenshot_speed.png)
+
+### 08/12/2022
+
+Made class for the debug text, it's kinda bad but does the job for now 
+
+![debug_text](progress-pics/Screenshot%202022-12-09%20145521.png)
+
+Also made F3 show the debug info and F4 hide it.
