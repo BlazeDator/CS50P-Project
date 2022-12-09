@@ -2,19 +2,17 @@ import pygame, sys
 
 class debug_text:
    def __init__(self,font:pygame.font.Font, text:str="1", x:int=0, y:int=0, color:tuple=(255,255,255), background:tuple=(0,0,0), size:int=32):
-      self.font = font
-      
       self.text = text
       self.x = x
       self.y = y
       self.color = color
       self.background = background
       self.size = size
-
+      self.font = font
+      
       self.surface = self.font.render(self.text, True, self.color, self.background)
       self.rect = self.surface.get_rect()
-      self.rect.move_ip(x, y)
-      #self.rect.move_ip(self.x, self.y)
+      self.rect.move_ip(self.x, self.y)
 
    def update(self, text:str):
       self.text = text
@@ -64,7 +62,7 @@ def main():
 
    # Game Loop
    while True:  
-      delta += clock.tick_busy_loop(max_framerate) 
+      delta += clock.tick(max_framerate) 
       
       # Debug 
       debug_framerate.update(str(int(clock.get_fps())) + " Max FPS: " + str(max_framerate))
