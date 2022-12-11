@@ -105,3 +105,13 @@ Some
 
 5000 of them
 ![5000](progress-pics/Screenshot_20221209_070243.png)
+
+### 11/12/2022
+
+Today I started by doing a new method for the squares to seek the players after that worked, I created a method for collisions between squares, at first it wasn't working right, but then I made it take a list of all the squares check if it's not the same by checking coordinates, and if not change their mov vector away from the colliding square.
+
+![Squares chasing](progress-pics/Screenshot_20221211_032920.png)
+
+I was testing different squares with different speeds and different collisions, as the blue ones didnt collide but any squares that they passed by collided, so they looked like they took them along
+
+Next up probably need to make a gun for the player, need to look into pygame.mouse and genertate bullets when player clicks mouse, that will go on the direction the mouse was in.

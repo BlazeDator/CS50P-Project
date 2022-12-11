@@ -18,13 +18,13 @@ class Debug_text:
       self.surface = self.font.render(self.text, True, self.color, self.background)
 
 class Player:
-   def __init__(self, size:int=30, screen_center=(1280,720), speed:int=8, pcolor:list=[255,255,255]):
+   def __init__(self, size:int=30, screen_center=(1280,720), speed:int=10, pcolor:list=[255,255,255]):
       self.surface = pygame.Surface((size,size)) 
       self.color = pygame.color.Color(*pcolor)
       self.rect = pygame.draw.circle(surface=self.surface, color=self.color, center=(self.surface.get_width()/2, self.surface.get_height()/2), radius=self.surface.get_width()/2, width=0)
       self.rect.move_ip(screen_center[0]-size, screen_center[1]-size)
       self.speed = speed
-      self.speed_diag = c_diag_speed(self.speed)
+      self.speed_diag = calc_diag_speed(self.speed)
       self.mov_vector = [0, 0]
 
    def movement(self, keys):
@@ -52,13 +52,17 @@ class Player:
       if not keys[pygame.K_w] and not keys[pygame.K_a] and not keys[pygame.K_s] and not keys[pygame.K_d]:
          self.mov_vector = [0, 0]
 
+   def move(self):
+      self.rect.move_ip(*self.mov_vector)
+
 class Square(Player):
-   def __init__(self, size:int=20, speed:int=7, screen_size:tuple=(1280,720)):
+   def __init__(self, size:int=20, speed:int=5, screen_size:tuple=(1280,720), pcolor:list=[255,0,0]):
       self.surface = pygame.Surface((size,size))
-      self.surface.fill((255, 0, 0))
+      self.color = pygame.color.Color(*pcolor)
+      self.surface.fill(self.color)
       self.rect = self.surface.get_rect()
       self.speed = speed
-      self.speed_diag = c_diag_speed(self.speed)
+      self.speed_diag = calc_diag_speed(self.speed)
       self.mov_vector = [0, 0]
       # Spawn
       x = random.randint(0, screen_size[0]-size)
@@ -79,7 +83,44 @@ class Square(Player):
          else:
             self.keys[key] = rnd
       self.movement(self.keys)
+
+   def mov_player(self, player_x:int, player_y:int):
+      s_x = self.rect.x
+      s_y = self.rect.y
+
+      self.keys = {key : False for key in self.keys}
+
+      if s_x < player_x:
+         self.keys[pygame.K_d] = True
+      elif s_x > player_x:
+         self.keys[pygame.K_a] = True
+      else:
+         self.keys[pygame.K_d] = False
+         self.keys[pygame.K_a] = False
+
+      if s_y < player_y:
+         self.keys[pygame.K_s] = True
+      elif s_y > player_y:
+         self.keys[pygame.K_w] = True
+      else:
+         self.keys[pygame.K_s] = False
+         self.keys[pygame.K_w] = False
+      self.movement(self.keys)
       
+   def check_collisions(self, squares:list[Player]):
+      for next in squares:
+         if self.rect.x == next.rect.x and self.rect.y == next.rect.y:
+            pass
+         elif self.rect.colliderect(next.rect):
+            if self.rect.x <= next.rect.x:
+               self.mov_vector[0] += -self.speed
+            elif self.rect.x  > next.rect.x:
+               self.mov_vector[0] += +self.speed
+
+            if self.rect.y  <= next.rect.y:
+               self.mov_vector[1] += -self.speed
+            elif self.rect.y  > next.rect.y:
+               self.mov_vector[1] += self.speed
       
 
 def main():
@@ -105,8 +146,10 @@ def main():
    player = Player(screen_center=(screen_size[0]/2, screen_size[1]/2))
 
    # Squares
-   squares = [Square(screen_size=screen_size) for i in range(50)]
-
+   squares_red = [Square(screen_size=screen_size) for i in range(25)]
+   squares_green = [Square(screen_size=screen_size, speed=1, pcolor=[0,255,0]) for i in range(25)]
+   squares_blue = [Square(screen_size=screen_size, speed=8, pcolor=[0,0,255]) for i in range(10)]
+   
 
    # Timers
    delta_25_ms = 0   # 40  Ticks per second
@@ -123,7 +166,7 @@ def main():
                "Player X: " + str(player.rect.x),
                "Player Y: " + str(player.rect.y),
                "Delta 1s: " + str(delta_1000_ms),
-               "Squares: " + str(len(squares))
+               "Squares: " + str(len(squares_red)+len(squares_green)+len(squares_blue))
             ]
       return debug_info
    debug_info = update_debug()
@@ -143,16 +186,29 @@ def main():
 
       player.movement(keys)
 
+
       if delta_25_ms >= 25: # 40 Tick Rate Updates
-         player.rect.move_ip(*player.mov_vector)  # Player Movement
-         for square in squares:
-            square.rect.move_ip(*square.mov_vector)       
+         player.move() # Player Movement
+         for square in squares_red: # Squares Movement
+            square.mov_player(player.rect.x, player.rect.y)
+            square.check_collisions(squares_red)
+            square.check_collisions(squares_green)
+            square.check_collisions(squares_blue)
+            square.move()
+         for square in squares_green:
+            square.mov_player(player.rect.x, player.rect.y)
+            square.check_collisions(squares_red)
+            square.check_collisions(squares_green)
+            square.check_collisions(squares_blue)
+            square.move()
+         for square in squares_blue:
+            square.mov_player(player.rect.x, player.rect.y)
+            square.check_collisions(squares_blue)
+            square.check_collisions(squares_green)
+            square.move()
          delta_25_ms = 0
 
       if delta_1000_ms >= 1000: # 1 Tick Rate Updates
-         # AI Decisions
-         for square in squares:
-            square.mov_random()
          delta_1000_ms = 0
 
       
@@ -160,7 +216,11 @@ def main():
       screen.fill(black)
       # Draw Image
       screen.blit(player.surface, player.rect)
-      for square in squares:
+      for square in squares_red:
+         screen.blit(square.surface, square.rect)
+      for square in squares_green:
+         screen.blit(square.surface, square.rect)
+      for square in squares_blue:
          screen.blit(square.surface, square.rect)
 
       # Framerate Control
@@ -184,7 +244,7 @@ def main():
       pygame.display.update()
 
    
-def c_diag_speed(speed: int) -> float:
+def calc_diag_speed(speed: int) -> float:
    # return speed * 0.7071
    v1, v1.x, v1.y = pygame.math.Vector2(), 0, 0
    v2, v2.x, v2.y = pygame.math.Vector2(), speed, speed
