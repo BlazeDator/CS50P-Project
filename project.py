@@ -55,6 +55,11 @@ class Player:
    def move(self):
       self.rect.move_ip(*self.mov_vector)
 
+   def check_death(self, squares:list):
+      for square in squares:
+         if self.rect.colliderect(square.rect):
+            self.speed, self.speed_diag = 0, 0
+
 class Square(Player):
    def __init__(self, size:int=20, speed:int=5, screen_size:tuple=(1280,720), pcolor:list=[255,0,0]):
       self.surface = pygame.Surface((size,size))
@@ -107,7 +112,7 @@ class Square(Player):
          self.keys[pygame.K_w] = False
       self.movement(self.keys)
       
-   def check_collisions(self, squares:list[Player]):
+   def check_collisions(self, squares:list):
       for next in squares:
          if self.rect.x == next.rect.x and self.rect.y == next.rect.y:
             pass
@@ -130,7 +135,7 @@ def main():
    icon = pygame.Surface((32,32))
    icon.fill((255, 0, 0))
    pygame.display.set_icon(icon)
-   screen_size = 1280, 720
+   screen_size = 1600, 900
    screen = pygame.display.set_mode(screen_size)
    clock = pygame.time.Clock()
    max_framerate = 200
@@ -141,19 +146,24 @@ def main():
    black = [0, 0, 0]
    white = [255,255,255]
    red = [255, 0, 0]
+   green = [0,255,0]
+   blue = [0,0,255]
+   purple = [150,20,255]
 
+   
    # player
    player = Player(screen_center=(screen_size[0]/2, screen_size[1]/2))
 
    # Squares
-   squares_red = [Square(screen_size=screen_size) for i in range(25)]
-   squares_green = [Square(screen_size=screen_size, speed=1, pcolor=[0,255,0]) for i in range(25)]
-   squares_blue = [Square(screen_size=screen_size, speed=8, pcolor=[0,0,255]) for i in range(10)]
-   
+   squares_red = [Square(screen_size=screen_size, speed=5, pcolor=red) for i in range(25)]
+   squares_green = [Square(screen_size=screen_size, speed=1, pcolor=green) for i in range(25)]
+   squares_blue = [Square(screen_size=screen_size, speed=8, pcolor=blue) for i in range(10)]
+   squares_purple = [Square(screen_size=screen_size, speed=6, pcolor=purple) for i in range(5)]
 
    # Timers
    delta_25_ms = 0   # 40  Ticks per second
    delta_1000_ms = 0 # 1   Tick  per second
+   start = 0
 
    # Debug Info
    show_debug = False
@@ -185,30 +195,35 @@ def main():
       keys = pygame.key.get_pressed()
 
       player.movement(keys)
-
-
+ 
+      entities = squares_red + squares_green + squares_blue + squares_purple
       if delta_25_ms >= 25: # 40 Tick Rate Updates
          player.move() # Player Movement
-         for square in squares_red: # Squares Movement
-            square.mov_player(player.rect.x, player.rect.y)
-            square.check_collisions(squares_red)
-            square.check_collisions(squares_green)
-            square.check_collisions(squares_blue)
-            square.move()
-         for square in squares_green:
-            square.mov_player(player.rect.x, player.rect.y)
-            square.check_collisions(squares_red)
-            square.check_collisions(squares_green)
-            square.check_collisions(squares_blue)
-            square.move()
-         for square in squares_blue:
-            square.mov_player(player.rect.x, player.rect.y)
-            square.check_collisions(squares_blue)
-            square.check_collisions(squares_green)
-            square.move()
+         player.check_death(entities)
+         if start >= 2:
+            for square in squares_red: # Squares Movement
+               square.mov_player(player.rect.x, player.rect.y)
+               square.check_collisions(squares_red + squares_green + squares_blue + squares_purple)
+               square.move()
+            for square in squares_green:
+               square.mov_player(player.rect.x, player.rect.y)
+               square.check_collisions(squares_red + squares_green + squares_blue)
+               square.move()
+            for square in squares_blue:
+               square.mov_player(player.rect.x, player.rect.y)
+               square.check_collisions(squares_blue + squares_green)
+               square.move()
+            for square in squares_purple:
+               square.check_collisions(squares_red + squares_green + squares_blue + squares_purple)
+               square.move()
+
          delta_25_ms = 0
 
       if delta_1000_ms >= 1000: # 1 Tick Rate Updates
+         for square in squares_purple:
+            square.mov_player(player.rect.x, player.rect.y)
+         
+         start += 1
          delta_1000_ms = 0
 
       
@@ -221,6 +236,8 @@ def main():
       for square in squares_green:
          screen.blit(square.surface, square.rect)
       for square in squares_blue:
+         screen.blit(square.surface, square.rect)
+      for square in squares_purple:
          screen.blit(square.surface, square.rect)
 
       # Framerate Control
