@@ -163,7 +163,7 @@ def main():
    # Timers
    delta_25_ms = 0   # 40  Ticks per second
    delta_1000_ms = 0 # 1   Tick  per second
-   start = 0
+   start = False
 
    # Debug Info
    show_debug = False
@@ -188,11 +188,18 @@ def main():
       tick = clock.tick(max_framerate) 
       delta_25_ms += tick
       delta_1000_ms += tick
-      
+
       for event in pygame.event.get():
          if event.type == pygame.QUIT: sys.exit()
       
       keys = pygame.key.get_pressed()
+
+      if keys[pygame.K_SPACE]:
+         start = True
+      if keys[pygame.K_BACKSPACE]:
+         start = False
+         player.speed = 10
+         player.speed_diag = calc_diag_speed(player.speed)
 
       player.movement(keys)
  
@@ -200,7 +207,7 @@ def main():
       if delta_25_ms >= 25: # 40 Tick Rate Updates
          player.move() # Player Movement
          player.check_death(entities)
-         if start >= 2:
+         if start:
             for square in squares_red: # Squares Movement
                square.mov_player(player.rect.x, player.rect.y)
                square.check_collisions(squares_red + squares_green + squares_blue + squares_purple)
@@ -222,8 +229,6 @@ def main():
       if delta_1000_ms >= 1000: # 1 Tick Rate Updates
          for square in squares_purple:
             square.mov_player(player.rect.x, player.rect.y)
-         
-         start += 1
          delta_1000_ms = 0
 
       
