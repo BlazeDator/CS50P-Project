@@ -157,10 +157,10 @@ def main():
 
    # Squares
    entities = []
-   squares_red = [Square(screen_size=screen_size, speed=5, pcolor=red) for i in range(25)]
-   squares_green = [Square(screen_size=screen_size, speed=1, pcolor=green) for i in range(0)]
-   squares_blue = [Square(screen_size=screen_size, speed=8, pcolor=blue) for i in range(0)]
-   squares_purple = [Square(screen_size=screen_size, speed=6, pcolor=purple) for i in range(0)]
+   squares_red = [Square(screen_size=screen_size, speed=5, pcolor=red) for i in range(15)]
+   squares_green = [Square(screen_size=screen_size, speed=1, pcolor=green) for i in range(25)]
+   squares_blue = [Square(screen_size=screen_size, speed=8, pcolor=blue) for i in range(3)]
+   squares_purple = [Square(screen_size=screen_size, speed=6, pcolor=purple) for i in range(6)]
    entities = squares_red + squares_green + squares_blue + squares_purple
    
    
