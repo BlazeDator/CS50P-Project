@@ -59,6 +59,7 @@ class Player:
       for square in squares:
          if self.rect.colliderect(square.rect):
             self.speed, self.speed_diag = 0, 0
+            return True
 
 class Square(Player):
    def __init__(self, size:int=20, speed:int=5, screen_size:tuple=(1280,720), pcolor:list=[255,0,0]):
@@ -114,7 +115,7 @@ class Square(Player):
       
    def check_collisions(self, squares:list):
       for next in squares:
-         if self.rect.x == next.rect.x and self.rect.y == next.rect.y:
+         if self == next:
             pass
          elif self.rect.colliderect(next.rect):
             if self.rect.x <= next.rect.x:
@@ -155,11 +156,14 @@ def main():
    player = Player(screen_center=(screen_size[0]/2, screen_size[1]/2))
 
    # Squares
+   entities = []
    squares_red = [Square(screen_size=screen_size, speed=5, pcolor=red) for i in range(25)]
-   squares_green = [Square(screen_size=screen_size, speed=1, pcolor=green) for i in range(25)]
-   squares_blue = [Square(screen_size=screen_size, speed=8, pcolor=blue) for i in range(10)]
-   squares_purple = [Square(screen_size=screen_size, speed=6, pcolor=purple) for i in range(5)]
-
+   squares_green = [Square(screen_size=screen_size, speed=1, pcolor=green) for i in range(0)]
+   squares_blue = [Square(screen_size=screen_size, speed=8, pcolor=blue) for i in range(0)]
+   squares_purple = [Square(screen_size=screen_size, speed=6, pcolor=purple) for i in range(0)]
+   entities = squares_red + squares_green + squares_blue + squares_purple
+   
+   
    # Timers
    delta_25_ms = 0   # 40  Ticks per second
    delta_1000_ms = 0 # 1   Tick  per second
@@ -176,7 +180,9 @@ def main():
                "Player X: " + str(player.rect.x),
                "Player Y: " + str(player.rect.y),
                "Delta 1s: " + str(delta_1000_ms),
-               "Squares: " + str(len(squares_red)+len(squares_green)+len(squares_blue))
+               "Squares: " + str(len(squares_red)+len(squares_green)+len(squares_blue)),
+               "E1: " + str(entities[0]),
+               "E2: " + str(entities[1])
             ]
       return debug_info
    debug_info = update_debug()
@@ -203,10 +209,13 @@ def main():
 
       player.movement(keys)
  
-      entities = squares_red + squares_green + squares_blue + squares_purple
+      
       if delta_25_ms >= 25: # 40 Tick Rate Updates
+         # Player
          player.move() # Player Movement
-         player.check_death(entities)
+         if player.check_death(entities): # Player Death
+            start  = False
+         # AI
          if start:
             for square in squares_red: # Squares Movement
                square.mov_player(player.rect.x, player.rect.y)
@@ -214,7 +223,7 @@ def main():
                square.move()
             for square in squares_green:
                square.mov_player(player.rect.x, player.rect.y)
-               square.check_collisions(squares_red + squares_green + squares_blue)
+               square.check_collisions(squares_red + squares_green + squares_blue + squares_purple)
                square.move()
             for square in squares_blue:
                square.mov_player(player.rect.x, player.rect.y)
@@ -223,10 +232,10 @@ def main():
             for square in squares_purple:
                square.check_collisions(squares_red + squares_green + squares_blue + squares_purple)
                square.move()
-
          delta_25_ms = 0
 
       if delta_1000_ms >= 1000: # 1 Tick Rate Updates
+         # AI
          for square in squares_purple:
             square.mov_player(player.rect.x, player.rect.y)
          delta_1000_ms = 0
