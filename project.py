@@ -217,6 +217,7 @@ def main():
                "Green Squares: " + str(len(squares_green)),
                "Killable Squares: " + str(len(squares_red)+len(squares_blue)+len(squares_purple)),
                "Mouse: " + str(pygame.mouse.get_pos()),
+               "Mouse after: " + str(calc_mouse_pos(player.center(), pygame.mouse.get_pos())),
                "Last Bullet:" + str(bullets[-1].mov_vector) if bullets else None,
                "Bullets: " + str(len(bullets)) if bullets else None
             ]
