@@ -115,3 +115,7 @@ Today I started by doing a new method for the squares to seek the players after 
 I was testing different squares with different speeds and different collisions, as the blue ones didnt collide but any squares that they passed by collided, so they looked like they took them along
 
 Next up probably need to make a gun for the player, need to look into pygame.mouse and genertate bullets when player clicks mouse, that will go on the direction the mouse was in.
+
+### 12/12/2022
+
+Moved the collision function out of classes, smoothed the movement of squares towards the player by giving margin on movements so they don't wobble. Reworked collisions so they don't add new speed unless explicitly  by the multiplier
