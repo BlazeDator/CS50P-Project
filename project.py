@@ -68,8 +68,6 @@ class Player:
    def center(self):
       return [self.rect.x + self.size/2, self.rect.y + self.size/2 ]
 
-   
-
 class Square(Player):
    def __init__(self, size:int=20, speed:int=5, screen_size:tuple=(1280,720), pcolor:list=[255,0,0]):
       self.surface = pygame.Surface((size,size))
@@ -126,10 +124,7 @@ class Square(Player):
          self.keys[pygame.K_w] = False
 
       self.movement(self.keys)
-
-
-               
-      
+           
 class Bullet:
    def __init__(self, size:int=5, player:list=[0,0], speed:int=25, pcolor:list=[255,255,255]):
       self.surface = pygame.Surface((size,size)) 
@@ -165,7 +160,6 @@ class Bullet:
       for square in squares:
          if self.rect.colliderect(square.rect):
             return True
-      
 
 def main():
    # Initialization
@@ -342,7 +336,6 @@ def main():
 
       # Send Frame
       pygame.display.update()
-
    
 def calc_diag_speed(speed: int) -> float:
    # return speed * 0.7071
@@ -369,14 +362,10 @@ def check_collisions(self:Square, squares:list[Square], multiply:int=1):
             else:
                self.mov_vector[1] = 0
 
-
 def calc_mouse_pos(player, mouse):
    player[0] = mouse[0] - player[0]
    player[1] = mouse[1] - player[1]
    return player
-
-
-
 
 if __name__ == "__main__":
     main()
