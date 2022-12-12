@@ -120,12 +120,14 @@ Next up probably need to make a gun for the player, need to look into pygame.mou
 
 Moved the collision function out of classes, smoothed the movement of squares towards the player by giving margin on movements so they don't wobble. Reworked collisions so they don't add new speed unless explicitly  by the multiplier
 
-Creating bullets, first I
+Creating bullets, first I could spawn them but they didn't move
 
 ![Not Moving](progress-pics/Screenshot_20221212_062048.png)
 
-
-
-
+Then I was able to make them move after staring a "thousand hours", into this page https://www.pygame.org/docs/ref/math.html#pygame.math.Vector2, 
 
 ![Bullets!!!](progress-pics/Screenshot%20(8).png)
+
+They're Moving! (Already working as intended here)
+
+But I couldn't make them go anywhere else but 90 degrees, as into the right or bottom because pygame.mouse.get_pos() got it's position relative to the start of the window 0,0. So I had to  calculate it relative to the player's location first I tried the player's location minus the mouse but that made them shoot backwards, then mouse location minus the player and voila it worked! EUREKA!

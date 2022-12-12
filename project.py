@@ -131,7 +131,7 @@ class Square(Player):
                
       
 class Bullet:
-   def __init__(self, size:int=5, player:list=[0,0], speed:int=10, pcolor:list=[255,255,255]):
+   def __init__(self, size:int=5, player:list=[0,0], speed:int=25, pcolor:list=[255,255,255]):
       self.surface = pygame.Surface((size,size)) 
       self.color = pygame.color.Color(*pcolor)
       self.rect = pygame.draw.circle(surface=self.surface, color=self.color, center=(self.surface.get_width()/2, self.surface.get_height()/2), radius=self.surface.get_width()/2, width=0)
@@ -252,13 +252,14 @@ def main():
       if delta_25_ms >= 25: # 40 Tick Rate Updates
          # Player
          player.move() # Player Movement
-         if mouse[0] == True and not player.cooldown: # Player Weapon
+         # Player Weapon
+         if mouse[0] == True and not player.cooldown: 
             bullets.append(Bullet(player=player.center()))
             bullets[-1].aim(calc_mouse_pos(player.center(), pygame.mouse.get_pos()))
             player.cooldown = True
          if player.cooldown:
             player.weapon_timer += 25
-            if player.weapon_timer >= 100:
+            if player.weapon_timer >= 250:
                player.cooldown = False
                player.weapon_timer = 0
 
@@ -269,13 +270,13 @@ def main():
                bullets.remove(bullet)
             elif bullet.check_kill(squares_red) or bullet.check_kill(squares_blue) or bullet.check_kill(squares_purple):
                bullets.remove(bullet)
-           
           
          # Player Death
          entities = squares_red + squares_green + squares_blue + squares_purple
          if player.check_death(entities): 
-            
             start  = False
+
+
          # AI
          if start:
             for square in squares_red: # Squares Movement
