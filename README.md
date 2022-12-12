@@ -119,3 +119,13 @@ Next up probably need to make a gun for the player, need to look into pygame.mou
 ### 12/12/2022
 
 Moved the collision function out of classes, smoothed the movement of squares towards the player by giving margin on movements so they don't wobble. Reworked collisions so they don't add new speed unless explicitly  by the multiplier
+
+Creating bullets, first I
+
+![Not Moving](progress-pics/Screenshot_20221212_062048.png)
+
+
+
+
+
+![Bullets!!!](progress-pics/Screenshot%20(8).png)
