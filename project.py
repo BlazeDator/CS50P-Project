@@ -24,6 +24,7 @@ class Player:
       self.rect = pygame.draw.circle(surface=self.surface, color=self.color, center=(self.surface.get_width()/2, self.surface.get_height()/2), radius=self.surface.get_width()/2, width=0)
       self.rect.move_ip(screen_center[0]-size, screen_center[1]-size)
       self.speed = speed
+      self.size = size
       self.speed_diag = calc_diag_speed(self.speed)
       self.mov_vector = [0, 0]
 
@@ -68,6 +69,7 @@ class Square(Player):
       self.surface.fill(self.color)
       self.rect = self.surface.get_rect()
       self.speed = speed
+      self.size = size
       self.speed_diag = calc_diag_speed(self.speed)
       self.mov_vector = [0, 0]
       # Spawn
@@ -90,43 +92,32 @@ class Square(Player):
             self.keys[key] = rnd
       self.movement(self.keys)
 
-   def mov_player(self, player_x:int, player_y:int):
+   def mov_player(self, player:Player):
       s_x = self.rect.x
       s_y = self.rect.y
+      player_x = player.rect.x
+      player_y = player.rect.y
+      margin = player.size/2
 
       self.keys = {key : False for key in self.keys}
 
-      if s_x < player_x:
+      if s_x < player_x-margin:
          self.keys[pygame.K_d] = True
-      elif s_x > player_x:
+      elif s_x > player_x+margin:
          self.keys[pygame.K_a] = True
       else:
          self.keys[pygame.K_d] = False
          self.keys[pygame.K_a] = False
 
-      if s_y < player_y:
+      if s_y < player_y-margin:
          self.keys[pygame.K_s] = True
-      elif s_y > player_y:
+      elif s_y > player_y+margin:
          self.keys[pygame.K_w] = True
       else:
          self.keys[pygame.K_s] = False
          self.keys[pygame.K_w] = False
-      self.movement(self.keys)
-      
-   def check_collisions(self, squares:list):
-      for next in squares:
-         if self == next:
-            pass
-         elif self.rect.colliderect(next.rect):
-            if self.rect.x <= next.rect.x:
-               self.mov_vector[0] += -self.speed
-            elif self.rect.x  > next.rect.x:
-               self.mov_vector[0] += +self.speed
 
-            if self.rect.y  <= next.rect.y:
-               self.mov_vector[1] += -self.speed
-            elif self.rect.y  > next.rect.y:
-               self.mov_vector[1] += self.speed
+      self.movement(self.keys)
       
 
 def main():
@@ -218,26 +209,26 @@ def main():
          # AI
          if start:
             for square in squares_red: # Squares Movement
-               square.mov_player(player.rect.x, player.rect.y)
-               square.check_collisions(squares_red + squares_green + squares_blue + squares_purple)
+               square.mov_player(player)
+               check_collisions(square, squares_red + squares_green + squares_blue + squares_purple)
                square.move()
             for square in squares_green:
-               square.mov_player(player.rect.x, player.rect.y)
-               square.check_collisions(squares_red + squares_green + squares_blue + squares_purple)
+               square.mov_player(player)
+               check_collisions(square, squares_red + squares_green + squares_blue + squares_purple, 2)
                square.move()
             for square in squares_blue:
-               square.mov_player(player.rect.x, player.rect.y)
-               square.check_collisions(squares_blue + squares_green)
+               square.mov_player(player)
+               check_collisions(square, squares_blue + squares_green)
                square.move()
             for square in squares_purple:
-               square.check_collisions(squares_red + squares_green + squares_blue + squares_purple)
+               check_collisions(square, squares_red + squares_green + squares_blue + squares_purple, 3)
                square.move()
          delta_25_ms = 0
 
       if delta_1000_ms >= 1000: # 1 Tick Rate Updates
          # AI
          for square in squares_purple:
-            square.mov_player(player.rect.x, player.rect.y)
+            square.mov_player(player)
          delta_1000_ms = 0
 
       
@@ -281,7 +272,26 @@ def calc_diag_speed(speed: int) -> float:
    v2, v2.x, v2.y = pygame.math.Vector2(), speed, speed
    return v1.distance_to(v2) / 2
 
+def check_collisions(self:Square, squares:list[Square], multiply:int=1):
+      for next in squares:
+         if self == next:
+            pass
+         elif self.rect.colliderect(next.rect):
+            if self.rect.x <= next.rect.x:
+               self.mov_vector[0] = -self.speed*multiply
+            elif self.rect.x  > next.rect.x:
+               self.mov_vector[0] = self.speed*multiply
+            else:
+               self.mov_vector [0] = 0
 
+            if self.rect.y  <= next.rect.y:
+               self.mov_vector[1] = -self.speed*multiply
+            elif self.rect.y  > next.rect.y:
+               self.mov_vector[1] = self.speed*multiply
+            else:
+               self.mov_vector[1] = 0
+            
+      
 
 
 if __name__ == "__main__":
