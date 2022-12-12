@@ -126,7 +126,8 @@ class Square(Player):
       self.movement(self.keys)
            
 class Bullet:
-   def __init__(self, size:int=5, player:list=[0,0], speed:int=25, pcolor:list=[255,255,255]):
+   def __init__(self, size:int=5, player:list=[0,0], speed:int=20, pcolor:list=[255,255,255]):
+      # Speed and Square size might make them go through without hit detection
       self.surface = pygame.Surface((size,size)) 
       self.color = pygame.color.Color(*pcolor)
       self.rect = pygame.draw.circle(surface=self.surface, color=self.color, center=(self.surface.get_width()/2, self.surface.get_height()/2), radius=self.surface.get_width()/2, width=0)
@@ -268,8 +269,9 @@ def main():
             elif bullet.check_kill(squares_red) or bullet.check_kill(squares_blue) or bullet.check_kill(squares_purple):
                bullets.remove(bullet)
             bullet.timer+=25
-            if bullet.timer > 4500:
+            if bullet.timer > 4500: # Despawn
                bullets.remove(bullet)
+               
          # Player Death
          entities = squares_red + squares_green + squares_blue + squares_purple
          if player.check_death(entities): 
