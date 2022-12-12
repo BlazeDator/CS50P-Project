@@ -140,6 +140,7 @@ class Bullet:
       self.size = size
       self.speed_diag = calc_diag_speed(self.speed)
       self.mov_vector = [0, 0]
+      self.timer = 0
 
    def aim(self, target):
       start = pygame.math.Vector2([self.rect.x, self.rect.y])
@@ -218,9 +219,11 @@ def main():
                "Player X: " + str(player.rect.x),
                "Player Y: " + str(player.rect.y),
                "Delta 1s: " + str(delta_1000_ms),
-               "Squares: " + str(len(squares_red)+len(squares_green)+len(squares_blue)),
+               "Green Squares: " + str(len(squares_green)),
+               "Killable Squares: " + str(len(squares_red)+len(squares_blue)+len(squares_purple)),
                "Mouse: " + str(pygame.mouse.get_pos()),
-               "bullet1" + str(bullets[-1].mov_vector) if bullets else None
+               "Last Bullet:" + str(bullets[-1].mov_vector) if bullets else None,
+               "Bullets: " + str(len(bullets)) if bullets else None
             ]
       return debug_info
    debug_info = update_debug()
@@ -270,7 +273,9 @@ def main():
                bullets.remove(bullet)
             elif bullet.check_kill(squares_red) or bullet.check_kill(squares_blue) or bullet.check_kill(squares_purple):
                bullets.remove(bullet)
-          
+            bullet.timer+=25
+            if bullet.timer > 4500:
+               bullets.remove(bullet)
          # Player Death
          entities = squares_red + squares_green + squares_blue + squares_purple
          if player.check_death(entities): 
