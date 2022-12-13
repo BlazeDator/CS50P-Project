@@ -15,7 +15,8 @@ class Debug_text:
 
    def update(self, text:str):
       self.text = text
-      self.surface = self.font.render(self.text, True, self.color, self.background)
+      #self.background on 4th positional for black background
+      self.surface = self.font.render(self.text, True, self.color)
 
 class Player:
    def __init__(self, size:int=30, screen_center=(1280,720), speed:int=10, pcolor:list=[255,255,255]):
@@ -229,7 +230,8 @@ def main():
                "Mouse after: " + str(calc_relative_pos(player.center(), pygame.mouse.get_pos())),
                "Last Bullet:" + str(bullets[-1].mov_vector) if bullets else None,
                "Bullets: " + str(len(bullets)) if bullets else None,
-               "red mv v1: " + str(squares_red[0].mov_vector) if squares_red else None
+               "red mv v1: " + str(squares_red[0].mov_vector) if squares_red else None,
+               "red rel pos: "+ str(calc_relative_pos(squares_red[0].center(), player.center())) if squares_red else None
             ]
       return debug_info
    debug_info = update_debug()
