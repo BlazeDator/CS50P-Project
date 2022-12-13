@@ -184,7 +184,6 @@ def main():
    clock = pygame.time.Clock()
    max_framerate = 200
    font = pygame.font.Font('freesansbold.ttf', 32)
-   mouse = pygame.mouse.get_pos()
 
    # Colors
    black = [0, 0, 0]
