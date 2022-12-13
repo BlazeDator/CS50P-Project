@@ -131,3 +131,7 @@ Then I was able to make them move after staring a "thousand hours", into this pa
 They're Moving! (Already working as intended here)
 
 But I couldn't make them go anywhere else but 90 degrees, as into the right or bottom because pygame.mouse.get_pos() got it's position relative to the start of the window 0,0. So I had to  calculate it relative to the player's location first I tried the player's location minus the mouse but that made them shoot backwards, then mouse location minus the player and voila it worked! EUREKA!
+
+### 13/13/2022
+
+After creating the bullets movement towards the mouse current position, I knew I had to make it for the enemy squares, after having some trouble with the function I created for the bullets, because I forgot I need relative positions between the squares and the player and not grid positions, I was able to make them move towards the player, so smoooooth!
