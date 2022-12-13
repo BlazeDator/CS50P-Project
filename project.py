@@ -124,7 +124,17 @@ class Square(Player):
          self.keys[pygame.K_w] = False
 
       self.movement(self.keys)
-           
+
+   def mov_aim(self, player):
+      start = pygame.math.Vector2(self.rect.x, self.rect.y)
+      target = pygame.math.Vector2(player)
+      distance = start.distance_to(target)
+      target.scale_to_length(distance)
+      target.normalize_ip()
+      target[0] *= self.speed
+      target[1] *= self.speed
+      self.mov_vector = target
+
 class Bullet:
    def __init__(self, size:int=5, player:list=[0,0], speed:int=20, pcolor:list=[255,255,255]):
       # Speed and Square size might make them go through without hit detection
@@ -191,10 +201,10 @@ def main():
 
    # Squares
    entities = []
-   squares_red = [Square(screen_size=screen_size, speed=8, pcolor=red) for i in range(15)]
-   squares_green = [Square(screen_size=screen_size, speed=1, pcolor=green) for i in range(25)]
-   squares_blue = [Square(screen_size=screen_size, speed=12, pcolor=blue) for i in range(3)]
-   squares_purple = [Square(screen_size=screen_size, speed=7, pcolor=purple) for i in range(6)]
+   squares_red = [Square(screen_size=screen_size, speed=8, pcolor=red) for i in range(1)]
+   squares_green = [Square(screen_size=screen_size, speed=1, pcolor=green) for i in range(0)]
+   squares_blue = [Square(screen_size=screen_size, speed=12, pcolor=blue) for i in range(0)]
+   squares_purple = [Square(screen_size=screen_size, speed=7, pcolor=purple) for i in range(0)]
    
    
    
@@ -217,9 +227,10 @@ def main():
                "Green Squares: " + str(len(squares_green)),
                "Killable Squares: " + str(len(squares_red)+len(squares_blue)+len(squares_purple)),
                "Mouse: " + str(pygame.mouse.get_pos()),
-               "Mouse after: " + str(calc_mouse_pos(player.center(), pygame.mouse.get_pos())),
+               "Mouse after: " + str(calc_relative_pos(player.center(), pygame.mouse.get_pos())),
                "Last Bullet:" + str(bullets[-1].mov_vector) if bullets else None,
-               "Bullets: " + str(len(bullets)) if bullets else None
+               "Bullets: " + str(len(bullets)) if bullets else None,
+               "red mv v1: " + str(squares_red[0].mov_vector) if squares_red else None
             ]
       return debug_info
    debug_info = update_debug()
@@ -254,7 +265,7 @@ def main():
          # Player Weapon
          if mouse[0] == True and not player.cooldown: 
             bullets.append(Bullet(player=player.center()))
-            bullets[-1].aim(calc_mouse_pos(player.center(), pygame.mouse.get_pos()))
+            bullets[-1].aim(calc_relative_pos(player.center(), pygame.mouse.get_pos()))
             player.cooldown = True
          if player.cooldown:
             player.weapon_timer += 25
@@ -282,7 +293,7 @@ def main():
          # AI
          if start:
             for square in squares_red: # Squares Movement
-               square.mov_player(player)
+               square.mov_aim(calc_relative_pos(square.center(), player.center()))
                check_collisions(square, squares_red + squares_green + squares_blue + squares_purple)
                square.move()
             for square in squares_green:
@@ -290,7 +301,7 @@ def main():
                check_collisions(square, squares_red + squares_green + squares_blue + squares_purple, 2)
                square.move()
             for square in squares_blue:
-               square.mov_player(player)
+               square.mov_aim(calc_relative_pos(square.center(), player.center()))
                check_collisions(square, squares_blue + squares_green)
                square.move()
             for square in squares_purple:
@@ -301,7 +312,7 @@ def main():
       if delta_1000_ms >= 1000: # 1 Tick Rate Updates
          # AI
          for square in squares_purple:
-            square.mov_player(player)
+            square.mov_aim(calc_relative_pos(square.center(), player.center()))
          delta_1000_ms = 0
 
       
@@ -365,7 +376,7 @@ def check_collisions(self:Square, squares:list[Square], multiply:int=1):
             else:
                self.mov_vector[1] = 0
 
-def calc_mouse_pos(player, mouse):
+def calc_relative_pos(player, mouse):
    player[0] = mouse[0] - player[0]
    player[1] = mouse[1] - player[1]
    return player
