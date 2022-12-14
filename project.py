@@ -30,32 +30,33 @@ class Player:
       self.mov_vector = [0, 0]
       self.cooldown = False
       self.weapon_timer = 0
-
+      self.can_move = True
 
    def movement(self, keys):
-      # Directionals
-      if keys[pygame.K_w]:
-         self.mov_vector = [0, -self.speed]
-      if keys[pygame.K_s]:
-         self.mov_vector = [0, self.speed]
-      if keys[pygame.K_a]:
-         self.mov_vector = [-self.speed, 0]
-      if keys[pygame.K_d]:
-         self.mov_vector = [self.speed, 0] 
+      if self.can_move:
+         # Directionals
+         if keys[pygame.K_w]:
+            self.mov_vector = [0, -self.speed]
+         if keys[pygame.K_s]:
+            self.mov_vector = [0, self.speed]
+         if keys[pygame.K_a]:
+            self.mov_vector = [-self.speed, 0]
+         if keys[pygame.K_d]:
+            self.mov_vector = [self.speed, 0] 
 
-      # Diagonals
-      if keys[pygame.K_w] and keys[pygame.K_a]: 
-         self.mov_vector = [-(self.speed_diag), -(self.speed_diag)]
-      if keys[pygame.K_w] and keys[pygame.K_d]: 
-         self.mov_vector = [(self.speed_diag), -(self.speed_diag)]
-      if keys[pygame.K_s] and keys[pygame.K_a]: 
-         self.mov_vector = [-(self.speed_diag), (self.speed_diag)]
-      if keys[pygame.K_s] and keys[pygame.K_d]: 
-         self.mov_vector = [(self.speed_diag), (self.speed_diag)]
+         # Diagonals
+         if keys[pygame.K_w] and keys[pygame.K_a]: 
+            self.mov_vector = [-(self.speed_diag), -(self.speed_diag)]
+         if keys[pygame.K_w] and keys[pygame.K_d]: 
+            self.mov_vector = [(self.speed_diag), -(self.speed_diag)]
+         if keys[pygame.K_s] and keys[pygame.K_a]: 
+            self.mov_vector = [-(self.speed_diag), (self.speed_diag)]
+         if keys[pygame.K_s] and keys[pygame.K_d]: 
+            self.mov_vector = [(self.speed_diag), (self.speed_diag)]
 
-      #Still
-      if not keys[pygame.K_w] and not keys[pygame.K_a] and not keys[pygame.K_s] and not keys[pygame.K_d]:
-         self.mov_vector = [0, 0]
+         #Still
+         if not keys[pygame.K_w] and not keys[pygame.K_a] and not keys[pygame.K_s] and not keys[pygame.K_d]:
+            self.mov_vector = [0, 0]
 
    def move(self):
       self.rect.move_ip(*self.mov_vector)
@@ -63,7 +64,9 @@ class Player:
    def check_death(self, squares:list):
       for square in squares:
          if self.rect.colliderect(square.rect):
-            self.speed, self.speed_diag = 0, 0
+            self.mov_vector[0] = 0
+            self.mov_vector[1] = 0
+            self.can_move = False
             return True
       
    def center(self):
@@ -79,6 +82,8 @@ class Square(Player):
       self.size = size
       self.speed_diag = calc_diag_speed(self.speed)
       self.mov_vector = [0, 0]
+      self.can_move = True
+
       # Spawn
       x = random.randint(0, screen_size[0]-size)
       y = random.randint(0, screen_size[1]-size)
@@ -173,6 +178,14 @@ class Bullet:
          if self.rect.colliderect(square.rect):
             return True
 
+class Wall:
+   def __init__(self, size:list[int]=[0,0], pcolor:list=[255,255,255], location:list[int]=[]):
+      self.surface = pygame.Surface(size)
+      self.color = pygame.color.Color(*pcolor)
+      self.surface.fill(self.color)
+      self.rect = self.surface.get_rect()
+      self.rect.move_ip(*location)
+
 def main():
    # Initialization
    pygame.init()
@@ -193,20 +206,31 @@ def main():
    green = [0,255,0]
    blue = [0,0,255]
    purple = [150,20,255]
+   grey= [75, 75, 75]
 
+   # Walls
+   wall_north = Wall(size=[screen_size[0], 500], pcolor=grey, location=[0, -495])
+   wall_east = Wall(size=[500, screen_size[1]], pcolor=grey, location=[-495, 0])
+   wall_south = Wall(size=[screen_size[0], 500], pcolor=grey, location=[0, screen_size[1]-5])
+   wall_west = Wall(size=[500, screen_size[1]], pcolor=grey, location=[screen_size[0]-5, 0])
    
+   walls = [
+      wall_north,
+      wall_east, 
+      wall_south, 
+      wall_west
+      ]
+
    # player
    player = Player(screen_center=(screen_size[0]/2, screen_size[1]/2))
    bullets:list[Bullet] = []
 
    # Squares
    entities = []
-   squares_red = [Square(screen_size=screen_size, speed=8, pcolor=red) for i in range(10)]
+   squares_red = [Square(screen_size=screen_size, speed=8, pcolor=red) for i in range(50)]
    squares_green = [Square(screen_size=screen_size, speed=1, pcolor=green) for i in range(0)]
-   squares_blue = [Square(screen_size=screen_size, speed=12, pcolor=blue) for i in range(0)]
-   squares_purple = [Square(screen_size=screen_size, speed=7, pcolor=purple) for i in range(0)]
-   
-   
+   squares_blue = [Square(screen_size=screen_size, speed=11, pcolor=blue) for i in range(10)]
+   squares_purple = [Square(screen_size=screen_size, speed=7, pcolor=purple) for i in range(10)]
    
    # Timers
    delta_25_ms = 0   # 40  Ticks per second
@@ -231,7 +255,9 @@ def main():
                "Last Bullet:" + str(bullets[-1].mov_vector) if bullets else None,
                "Bullets: " + str(len(bullets)) if bullets else None,
                "red mv v1: " + str(squares_red[0].mov_vector) if squares_red else None,
-               "red rel pos: "+ str(calc_relative_pos(squares_red[0].center(), player.center())) if squares_red else None
+               "red rel pos: "+ str(calc_relative_pos(squares_red[0].center(), player.center())) if squares_red else None,
+               "purple mv v1: " + str(squares_purple[0].mov_vector) if squares_purple else None,
+               "purple rel pos: "+ str(calc_relative_pos(squares_purple[0].center(), player.center())) if squares_purple else None
             ]
       return debug_info
    debug_info = update_debug()
@@ -252,13 +278,12 @@ def main():
 
       if keys[pygame.K_SPACE]:
          start = True
+         player.can_move = True
       if keys[pygame.K_BACKSPACE]:
-         start = False
-         player.speed = 10
-         player.speed_diag = calc_diag_speed(player.speed)
+         player.can_move = True
 
       player.movement(keys)
-      
+      check_collisions(player, walls)
       
       if delta_25_ms >= 25: # 40 Tick Rate Updates
          # Player
@@ -277,7 +302,7 @@ def main():
          # Bullets
          for bullet in bullets:
             bullet.move()
-            if bullet.check_death(squares_green):
+            if bullet.check_death(squares_green + walls):
                bullets.remove(bullet)
             elif bullet.check_kill(squares_red) or bullet.check_kill(squares_blue) or bullet.check_kill(squares_purple):
                bullets.remove(bullet)
@@ -295,18 +320,21 @@ def main():
          if start:
             for square in squares_red: # Squares Movement
                square.mov_aim(calc_relative_pos(square.center(), player.center()))
-               check_collisions(square, squares_red + squares_green + squares_blue + squares_purple)
+               check_collisions(square, squares_red + squares_green + squares_blue + squares_purple + walls)
                square.move()
             for square in squares_green:
                square.mov_player(player)
-               check_collisions(square, squares_red + squares_green + squares_blue + squares_purple, 2)
+               check_collisions(square, squares_red + squares_green + squares_blue + squares_purple + walls, 2)
                square.move()
             for square in squares_blue:
                square.mov_aim(calc_relative_pos(square.center(), player.center()))
-               check_collisions(square, squares_blue + squares_green)
+               check_collisions(square, squares_blue + squares_green + walls)
                square.move()
             for square in squares_purple:
-               check_collisions(square, squares_red + squares_green + squares_blue + squares_purple, 3)
+               check_collisions(square, squares_red + squares_green + squares_blue + squares_purple + walls, 3)
+               if square.mov_vector[0] > square.speed * 1.5 or square.mov_vector[1] > square.speed * 1.5:
+                  square.mov_vector[0] -= 1
+                  square.mov_vector[1] -= 1
                square.move()
          delta_25_ms = 0
 
@@ -331,12 +359,19 @@ def main():
          screen.blit(square.surface, square.rect)
       for square in squares_purple:
          screen.blit(square.surface, square.rect)
+      for wall in walls:
+         screen.blit(wall.surface, wall.rect)
 
       # Framerate Control
       if keys[pygame.K_UP]:
          max_framerate += 5
       if keys[pygame.K_DOWN]:
          max_framerate -= 5
+
+      # Cheats
+      if keys[pygame.K_KP_PLUS]:
+         player.cooldown = False
+
 
       # Debug  Info
       if keys[pygame.K_F3]:
@@ -363,14 +398,14 @@ def check_collisions(self:Square, squares:list[Square], multiply:int=1):
          if self == next:
             pass
          elif self.rect.colliderect(next.rect):
-            if self.rect.x <= next.rect.x:
+            if self.rect.x < next.rect.x:
                self.mov_vector[0] = -self.speed*multiply
             elif self.rect.x  > next.rect.x:
                self.mov_vector[0] = self.speed*multiply
             else:
                self.mov_vector [0] = 0
 
-            if self.rect.y  <= next.rect.y:
+            if self.rect.y  < next.rect.y:
                self.mov_vector[1] = -self.speed*multiply
             elif self.rect.y  > next.rect.y:
                self.mov_vector[1] = self.speed*multiply
