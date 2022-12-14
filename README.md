@@ -140,3 +140,16 @@ After creating the bullets movement towards the mouse current position, I knew I
 Added walls but the purple squares kept getting stuck in the corners, tried making circles, but they don't havea round collision. Altered the speed vector after collisions to reduce the max speed a bit. Seems to be working most of the time.
 
 ![walls](progress-pics/Screenshot%20(10).png)
+
+### 14/14/2022
+
+#### Features needed:
+
+- Player dot with WASD movements and mouse for aiming       (V)
+- A timer and wave counter                                  (X)
+- Enemy squares who will kill the player if they touch them (V)
+- Kill counter                                              (X)
+- Leaderboard of attempts                                   (X)
+- Scaling difficulty with waves                             (V)
+
+Decided the next step was waves, added that and an endgame, after going through the waves, the player receives a screen congratulating them, if they die, they go back a wave. Also added a hint to hit space to start game.
