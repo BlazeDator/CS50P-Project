@@ -209,17 +209,12 @@ def main():
    grey= [75, 75, 75]
 
    # Walls
-   wall_north = Wall(size=[screen_size[0], 500], pcolor=grey, location=[0, -495])
-   wall_east = Wall(size=[500, screen_size[1]], pcolor=grey, location=[-495, 0])
-   wall_south = Wall(size=[screen_size[0], 500], pcolor=grey, location=[0, screen_size[1]-5])
-   wall_west = Wall(size=[500, screen_size[1]], pcolor=grey, location=[screen_size[0]-5, 0])
+   wall_north = Wall(size=[screen_size[0], 900], pcolor=grey, location=[0, -895])
+   wall_east = Wall(size=[900, screen_size[1]], pcolor=grey, location=[-895, 0])
+   wall_south = Wall(size=[screen_size[0], 900], pcolor=grey, location=[0, screen_size[1]-5])
+   wall_west = Wall(size=[900, screen_size[1]], pcolor=grey, location=[screen_size[0]-5, 0])
    
-   walls = [
-      wall_north,
-      wall_east, 
-      wall_south, 
-      wall_west
-      ]
+   walls = [wall_north, wall_east, wall_south, wall_west]
 
    # player
    player = Player(screen_center=(screen_size[0]/2, screen_size[1]/2))
@@ -227,10 +222,10 @@ def main():
 
    # Squares
    entities = []
-   squares_red = [Square(screen_size=screen_size, speed=8, pcolor=red) for i in range(75)]
+   squares_red = [Square(screen_size=screen_size, speed=7, pcolor=red) for i in range(0)]
    squares_green = [Square(screen_size=screen_size, speed=1, pcolor=green) for i in range(0)]
-   squares_blue = [Square(screen_size=screen_size, speed=11, pcolor=blue) for i in range(0)]
-   squares_purple = [Square(screen_size=screen_size, speed=7, pcolor=purple) for i in range(0)]
+   squares_blue = [Square(screen_size=screen_size, speed=9, pcolor=blue) for i in range(0)]
+   squares_purple = [Square(screen_size=screen_size, speed=7, pcolor=purple) for i in range(50)]
    
    # Timers
    delta_25_ms = 0   # 40  Ticks per second
@@ -332,9 +327,10 @@ def main():
                square.move()
             for square in squares_purple:
                check_collisions(square, squares_red + squares_green + squares_blue + squares_purple + walls, 3)
-               if square.mov_vector[0] > square.speed * 1.5 or square.mov_vector[1] > square.speed * 1.5:
-                  square.mov_vector[0] -= 1
-                  square.mov_vector[1] -= 1
+               if square.mov_vector[0] > square.speed * 1.5:
+                  square.mov_vector[0] -= 2
+               if square.mov_vector[1] > square.speed * 1.5:   
+                  square.mov_vector[1] -= 2
                square.move()
          delta_25_ms = 0
 
