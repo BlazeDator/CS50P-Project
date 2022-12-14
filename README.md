@@ -135,3 +135,8 @@ But I couldn't make them go anywhere else but 90 degrees, as into the right or b
 ### 13/13/2022
 
 After creating the bullets movement towards the mouse current position, I knew I had to make it for the enemy squares, after having some trouble with the function I created for the bullets, because I forgot I need relative positions between the squares and the player and not grid positions, I was able to make them move towards the player, so smoooooth!
+
+
+Added walls but the purple squares kept getting stuck in the corners, tried making circles, but they don't havea round collision. Altered the speed vector after collisions to reduce the max speed a bit. seems to be working most of the time.
+
+![walls](progress-pics/Screenshot%20(10).png)
