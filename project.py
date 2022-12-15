@@ -13,8 +13,9 @@ class Debug_text:
    def update(self, text:str):
       self.surface = self.font.render(text, True, self.color)
 
-class Text:
+class Text(Debug_text):
    def __init__(self, font:pygame.font.Font, text:str, location:list, color:list):
+      self.font = font
       self.color = pygame.color.Color(*color)
       self.surface = font.render(text, True, self.color)
       self.rect = self.surface.get_rect()
@@ -202,7 +203,8 @@ def main():
    font = pygame.font.Font('freesansbold.ttf', 32)
    game = True
    game_time = 0
-   
+   kills = 0
+   deaths = 0
 
    # Colors
    black = [0, 0, 0]
@@ -215,6 +217,10 @@ def main():
 
    # Text
    start_text = Text(font, "Press Space to start!", [(screen_size[0]-336)/2, screen_size[1]*0.1], white)
+   wave_text = Text(font, "", [screen_size[0]*0.73, screen_size[1]*0.01], white)
+   time_text = Text(font, "", [screen_size[0]*0.85, screen_size[1]*0.01], white)
+   kills_text = Text(font, "", [screen_size[0]*0.61, screen_size[1]*0.01], white)
+   deaths_text = Text(font, "", [screen_size[0]*0.49, screen_size[1]*0.01], white)
 
    # Walls
    wall_north = Wall(size=[screen_size[0], 900], pcolor=grey, location=[0, -895])
@@ -232,10 +238,10 @@ def main():
    # Order: Red, Green, Blue, Purple
    waves = [
       [25,0,0,0],
-      [15,0,5,0],
-      [10,0,0,10],
-      [10,15,0,5],
-      [20,25,5,5]
+      #[15,0,5,0],
+      #[10,0,0,10],
+      #[10,15,0,5],
+      #[20,25,5,5]
    ]
    wave_counter = 0
 
@@ -290,6 +296,12 @@ def main():
       delta_25_ms += tick
       delta_1000_ms += tick
 
+      # UI
+      time_text.update("Time: " + str(game_time))
+      wave_text.update("Wave: " + str(wave_counter+1) + "/" + str(len(waves)))
+      kills_text.update("Kills: " + str(kills)) 
+      deaths_text.update("Deaths: " + str(deaths))
+
       for event in pygame.event.get():
          if event.type == pygame.QUIT: sys.exit()
       
@@ -325,6 +337,7 @@ def main():
             if bullet.check_death(squares_green + walls):
                bullets.remove(bullet)
             elif bullet.check_kill(squares_red) or bullet.check_kill(squares_blue) or bullet.check_kill(squares_purple):
+               kills +=1
                bullets.remove(bullet)
             bullet.timer+=25
             if bullet.timer > 4500: # Despawn
@@ -334,6 +347,7 @@ def main():
          entities = squares_red + squares_green + squares_blue + squares_purple
          if player.check_death(entities): 
             start  = False
+            deaths += 1
             if wave_counter > 0:
                wave_counter -= 1
             squares_red.clear()
@@ -412,6 +426,12 @@ def main():
          screen.blit(wall.surface, wall.rect)
       if not start:
          screen.blit(start_text.surface, start_text.rect)
+      
+      # UI
+      screen.blit(time_text.surface, time_text.rect)
+      screen.blit(wave_text.surface, wave_text.rect)
+      screen.blit(kills_text.surface, kills_text.rect)
+      screen.blit(deaths_text.surface, deaths_text.rect)
 
       # Framerate Control
       if keys[pygame.K_UP]:
@@ -439,6 +459,10 @@ def main():
       pygame.display.update()
 
    end_text = Text(font, "Congratulations!", [(screen_size[0]-272)/2, screen_size[1]*0.3], white) 
+   wave_text = Text(font, "Time: " + str(game_time) , [(screen_size[0]-416)/2, screen_size[1]*0.4], white)
+   time_text = Text(font, "Wave: " + str(wave_counter) + "/" + str(len(waves)), [(screen_size[0]+128)/2, screen_size[1]*0.4], white)
+   kills_text = Text(font, "Kills: " + str(kills), [(screen_size[0]-416)/2, screen_size[1]*0.5], white)
+   deaths_text = Text(font, "Deaths: " + str(deaths), [(screen_size[0]+128)/2, screen_size[1]*0.5], white)
 
    # End game
    while True:
@@ -448,6 +472,10 @@ def main():
 
 
       screen.fill(black)
+      screen.blit(time_text.surface, time_text.rect)
+      screen.blit(wave_text.surface, wave_text.rect)
+      screen.blit(kills_text.surface, kills_text.rect)
+      screen.blit(deaths_text.surface, deaths_text.rect)
       screen.blit(end_text.surface, end_text.rect)
       pygame.display.update()
       

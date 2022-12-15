@@ -143,13 +143,21 @@ Added walls but the purple squares kept getting stuck in the corners, tried maki
 
 ### 14/14/2022
 
+
+Decided the next step was waves, added that and an endgame, after going through the waves, the player receives a screen congratulating them, if they die, they go back a wave. Also added a hint to hit space to start game.
+
 #### Features needed:
 
 - Player dot with WASD movements and mouse for aiming       (V)
-- A timer and wave counter                                  (X)
 - Enemy squares who will kill the player if they touch them (V)
-- Kill counter                                              (X)
-- Leaderboard of attempts                                   (X)
 - Scaling difficulty with waves                             (V)
 
-Decided the next step was waves, added that and an endgame, after going through the waves, the player receives a screen congratulating them, if they die, they go back a wave. Also added a hint to hit space to start game.
+
+### 15/12/2022
+
+Today I worked a bit on adding a timer, wave counter and kill/death counter, which I show automatically while playing and show it again at the end for the player to see how they fared.
+
+- A timer and wave counter                                  (V)
+- Kill counter                                              (V)
+
+Now I'm gonna build the test_project.py and I said I was gonna implement  a "- Leaderboard of attempts" but I feel like moving on from the project and I really feel like I accomplished what I set out to do with this current implementation.
