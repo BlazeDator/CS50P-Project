@@ -9,7 +9,7 @@ https://docs.github.com/en/get-started/writing-on-github/getting-started-with-wr
 -->
 
 # Survival Squared
-## Video Demo:  <URL HERE>
+## Video Demo:  <https://youtu.be/ojWTxJPYB9c>
 ## Description:
 
 <br>
