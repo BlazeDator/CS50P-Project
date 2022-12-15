@@ -167,3 +167,6 @@ UI during game
 
 Final Presentation
 ![Alt text](progress-pics/Screenshot_20221215_080009.png)
+
+
+Worked on the test_project.py, looks good enough. I think that's it, going to record a video for the project

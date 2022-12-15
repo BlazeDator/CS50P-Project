@@ -484,11 +484,22 @@ def main():
 
 def calc_diag_speed(speed: int) -> float:
    # return speed * 0.7071
-   v1, v1.x, v1.y = pygame.math.Vector2(), 0, 0
-   v2, v2.x, v2.y = pygame.math.Vector2(), speed, speed
-   return v1.distance_to(v2) / 2
+   if speed < 0:
+      raise ValueError
+   try:
+      v1, v1.x, v1.y = pygame.math.Vector2(), 0, 0
+      v2, v2.x, v2.y = pygame.math.Vector2(), speed, speed
+   except TypeError:
+      raise TypeError
+   else:
+      return v1.distance_to(v2) / 2
 
 def check_collisions(self:Square, squares:list[Square], multiply:int=1):
+   try:
+      if len(squares) < 1:
+         raise ValueError
+      if type(multiply) != int or multiply < 1:
+         raise TypeError
       for next in squares:
          if self == next:
             pass
@@ -506,16 +517,31 @@ def check_collisions(self:Square, squares:list[Square], multiply:int=1):
                self.mov_vector[1] = self.speed*multiply
             else:
                self.mov_vector[1] = 0
+   except TypeError:
+      raise TypeError
+   except AttributeError:
+      raise AttributeError
+   else:
+      pass
 
-def calc_relative_pos(player, mouse):
-   player[0] = mouse[0] - player[0]
-   player[1] = mouse[1] - player[1]
-   return player
+def calc_relative_pos(player:list[int], mouse:list[int]) -> list[int]:
+   try:
+      player[0] = mouse[0] - player[0]
+      player[1] = mouse[1] - player[1]
+   except TypeError:
+      raise TypeError
+   else:
+      return player
 
 def safe_start(player:Player, squares:list[Square]):
-   for square in squares:
-      if square.rect.colliderect(player.rect): 
-         squares.remove(square)
+   try:
+      for square in squares:
+         if square.rect.colliderect(player.rect): 
+            squares.remove(square)
+   except AttributeError:
+      raise AttributeError
+   else:
+      pass
 
 if __name__ == "__main__":
     main()
