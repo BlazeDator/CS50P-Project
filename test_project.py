@@ -1,0 +1,13 @@
+from project import calc_diag_speed, calc_relative_pos, check_collisions, safe_start
+
+def test_calc_diag_speed():
+    ...
+
+def test_calc_relative_pos():
+    ...
+
+def test_check_collisions():
+    ...
+
+def test_safe_start():
+    ...
