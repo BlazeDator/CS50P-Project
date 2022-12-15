@@ -342,18 +342,6 @@ def main():
             bullet.timer+=25
             if bullet.timer > 4500: # Despawn
                bullets.remove(bullet)
-               
-         # Player Death
-         entities = squares_red + squares_green + squares_blue + squares_purple
-         if player.check_death(entities): 
-            start  = False
-            deaths += 1
-            if wave_counter > 0:
-               wave_counter -= 1
-            squares_red.clear()
-            squares_green.clear()
-            squares_blue.clear()
-            squares_purple.clear()
 
          # AI
          if start:
@@ -376,6 +364,18 @@ def main():
                if square.mov_vector[1] > square.speed * 1.5:   
                   square.mov_vector[1] -= 2
                square.move()
+
+         # Player Death
+         entities = squares_red + squares_green + squares_blue + squares_purple
+         if player.check_death(entities): 
+            start  = False
+            deaths += 1
+            if wave_counter > 0:
+               wave_counter -= 1
+            squares_red.clear()
+            squares_green.clear()
+            squares_blue.clear()
+            squares_purple.clear()
 
          # Wave Control
          if len(squares_red)+len(squares_blue)+len(squares_purple) == 0:
