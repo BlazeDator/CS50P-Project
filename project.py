@@ -238,10 +238,10 @@ def main():
    # Order: Red, Green, Blue, Purple
    waves = [
       [25,0,0,0],
-      #[15,0,5,0],
-      #[10,0,0,10],
-      #[10,15,0,5],
-      #[20,25,5,5]
+      [15,0,5,0],
+      [10,0,0,10],
+      [10,15,0,5],
+      [20,25,5,5]
    ]
    wave_counter = 0
 
@@ -297,7 +297,7 @@ def main():
       delta_1000_ms += tick
 
       # UI
-      time_text.update("Time: " + str(game_time))
+      time_text.update("Time: " + str(game_time) + "s")
       wave_text.update("Wave: " + str(wave_counter+1) + "/" + str(len(waves)))
       kills_text.update("Kills: " + str(kills)) 
       deaths_text.update("Deaths: " + str(deaths))
@@ -459,7 +459,7 @@ def main():
       pygame.display.update()
 
    end_text = Text(font, "Congratulations!", [(screen_size[0]-272)/2, screen_size[1]*0.3], white) 
-   wave_text = Text(font, "Time: " + str(game_time) , [(screen_size[0]-416)/2, screen_size[1]*0.4], white)
+   wave_text = Text(font, "Time: " + str(game_time) + "s", [(screen_size[0]-416)/2, screen_size[1]*0.4], white)
    time_text = Text(font, "Wave: " + str(wave_counter) + "/" + str(len(waves)), [(screen_size[0]+128)/2, screen_size[1]*0.4], white)
    kills_text = Text(font, "Kills: " + str(kills), [(screen_size[0]-416)/2, screen_size[1]*0.5], white)
    deaths_text = Text(font, "Deaths: " + str(deaths), [(screen_size[0]+128)/2, screen_size[1]*0.5], white)

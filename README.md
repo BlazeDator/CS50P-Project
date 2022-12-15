@@ -161,3 +161,9 @@ Today I worked a bit on adding a timer, wave counter and kill/death counter, whi
 - Kill counter                                              (V)
 
 Now I'm gonna build the test_project.py and I said I was gonna implement  a "- Leaderboard of attempts" but I feel like moving on from the project and I really feel like I accomplished what I set out to do with this current implementation.
+
+UI during game
+![Alt text](progress-pics/Screenshot_20221215_075942.png)
+
+Final Presentation
+![Alt text](progress-pics/Screenshot_20221215_080009.png)
