@@ -1,7 +1,7 @@
 import pygame, sys, random
 
 class Debug_text:
-   def __init__(self,font:pygame.font.Font, text:str="1", x:int=0, y:int=0, color:list=[255,255,255]):
+   def __init__(self,font:pygame.font.Font, text="1", x=0, y=0, color=[255,255,255]):
       self.color = pygame.color.Color(*color)
       self.font = font
       self.surface = self.font.render(text, True, self.color)
@@ -14,7 +14,7 @@ class Debug_text:
       self.surface = self.font.render(text, True, self.color)
 
 class Text(Debug_text):
-   def __init__(self, font:pygame.font.Font, text:str, location:list, color:list):
+   def __init__(self, font:pygame.font.Font, text, location, color):
       self.font = font
       self.color = pygame.color.Color(*color)
       self.surface = font.render(text, True, self.color)
@@ -22,7 +22,7 @@ class Text(Debug_text):
       self.rect.move_ip(*location)
 
 class Player:
-   def __init__(self, size:int=30, screen_center=(1280,720), speed:int=10, pcolor:list=[255,255,255]):
+   def __init__(self, size=30, screen_center=(1280,720), speed=10, pcolor=[255,255,255]):
       self.surface = pygame.Surface((size,size)) 
       self.color = pygame.color.Color(*pcolor)
       self.rect = pygame.draw.circle(surface=self.surface, color=self.color, center=(self.surface.get_width()/2, self.surface.get_height()/2), radius=self.surface.get_width()/2, width=0)
@@ -64,7 +64,7 @@ class Player:
    def move(self):
       self.rect.move_ip(*self.mov_vector)
 
-   def check_death(self, squares:list):
+   def check_death(self, squares):
       for square in squares:
          if self.rect.colliderect(square.rect):
             self.mov_vector[0] = 0
@@ -76,7 +76,7 @@ class Player:
       return [self.rect.x + self.size/2, self.rect.y + self.size/2 ]
 
 class Square(Player):
-   def __init__(self, size:int=20, speed:int=5, screen_size:tuple=(1280,720), pcolor:list=[255,0,0]):
+   def __init__(self, size=20, speed=5, screen_size=(1280,720), pcolor=[255,0,0]):
       self.surface = pygame.Surface((size,size))
       self.color = pygame.color.Color(*pcolor)
       self.surface.fill(self.color)
@@ -145,7 +145,7 @@ class Square(Player):
       self.mov_vector = target
 
 class Bullet:
-   def __init__(self, size:int=5, player:list=[0,0], speed:int=20, pcolor:list=[255,255,255]):
+   def __init__(self, size=5, player=[0,0], speed=20, pcolor=[255,255,255]):
       # Speed and Square size might make them go through without hit detection
       self.surface = pygame.Surface((size,size)) 
       self.color = pygame.color.Color(*pcolor)
@@ -170,19 +170,19 @@ class Bullet:
    def move(self):
       self.rect.move_ip(*self.mov_vector)
 
-   def check_kill(self, squares:list):
+   def check_kill(self, squares):
       for square in squares:
          if self.rect.colliderect(square.rect):
             squares.remove(square)
             return True
 
-   def check_death(self, squares:list):
+   def check_death(self, squares):
       for square in squares:
          if self.rect.colliderect(square.rect):
             return True
 
 class Wall:
-   def __init__(self, size:list[int]=[0,0], pcolor:list=[255,255,255], location:list[int]=[]):
+   def __init__(self, size=[0,0], pcolor=[255,255,255], location=[]):
       self.surface = pygame.Surface(size)
       self.color = pygame.color.Color(*pcolor)
       self.surface.fill(self.color)
@@ -263,7 +263,7 @@ def main():
 
    # Debug Info
    show_debug = False
-   def update_debug() -> list[str]:
+   def update_debug():
       debug_info = [
                "Version 0.1 ",
                "Game Time: " + str(game_time) + " s",
@@ -482,7 +482,7 @@ def main():
 
 
 
-def calc_diag_speed(speed: int) -> float:
+def calc_diag_speed(speed):
    # return speed * 0.7071
    if speed < 0:
       raise ValueError
@@ -494,7 +494,7 @@ def calc_diag_speed(speed: int) -> float:
    else:
       return v1.distance_to(v2) / 2
 
-def check_collisions(self:Square, squares:list[Square], multiply:int=1):
+def check_collisions(self, squares, multiply=1):
    try:
       if len(squares) < 1:
          raise ValueError
@@ -524,7 +524,7 @@ def check_collisions(self:Square, squares:list[Square], multiply:int=1):
    else:
       pass
 
-def calc_relative_pos(player:list[int], mouse:list[int]) -> list[int]:
+def calc_relative_pos(player, mouse):
    try:
       player[0] = mouse[0] - player[0]
       player[1] = mouse[1] - player[1]
@@ -533,7 +533,7 @@ def calc_relative_pos(player:list[int], mouse:list[int]) -> list[int]:
    else:
       return player
 
-def safe_start(player:Player, squares:list[Square]):
+def safe_start(player, squares):
    try:
       for square in squares:
          if square.rect.colliderect(player.rect): 
